@@ -14,7 +14,7 @@ main:
   - title: "Publications"
     url: /publications/   
 
-  - title: "Some Odd Road (travel blog)"
+  - title: "Some Odd Road"
     url: /year-archive/
     
   - title: "Contact"
@@ -23,5 +23,5 @@ main:
   # - title: "CV"
   #   url: /cv-json/
     
-  - title: "Guide"
-    url: /markdown/
+ # - title: "Guide"
+ #  url: /markdown/
