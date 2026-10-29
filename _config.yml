@@ -25,9 +25,9 @@ author:
   # Biographic information
   avatar           : "profile.png"
   name             : "Jonathan A. Solis"
-  bio              : "Researcher | Analyst | Writer | Son of a Librarian"
+  bio              : "Researcher | Analyst | Writer"
   location         : "New Orleans, LA (USA)"
-  employer         : ""
+  employer         : # URL
   uri              : "https://www.linkedin.com/in/jacheesolis/"
   email            : "jasolis504@gmail.com" 
 
@@ -40,7 +40,7 @@ author:
   orcid            : "https://orcid.org/0000-0002-2570-7411"
   semantic         : # URL
   ssrn             : # URL
-  pubmed           : ""
+  pubmed           : # URL
   researchgate     : # URL
   scopus           : # URL
   zotero           : # URL
@@ -50,13 +50,13 @@ author:
   bitbucket        : # Username - Update with your username on the site
   codepen          : # Username
   dribbble         : # Username
-  github           : "academicpages"
+  github           : "https://github.com/westbank-alchemy"
   kaggle           : # Username  
   stackoverflow    : # User number or user number and name (i.e., use "1" or "1/jeff-atwood")    
 
   # Social media
   artstation       : # Username
-  bluesky          : "" # Replace this with you Bluesky username
+  bluesky          : # URL # Replace this with you Bluesky username
   facebook         : # Username
   flickr           : # Username
   foursquare       : # Username
