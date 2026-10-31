@@ -56,14 +56,6 @@ redirect_from:
 
 <div class="background-compact">
 
-<h2>Education</h2>
-
-<ul>
-  <li>Ph.D. in Political Science, University of Houston</li>
-  <li>M.A. in Political Science, University of New Orleans</li>
-  <li>B.A. in Mass Communication, Louisiana State University</li>
-</ul>
-
 <h2>Professional Experience</h2>
 
 <ul>
@@ -84,6 +76,14 @@ redirect_from:
     Outreach Coordinator, Office of Community Development / Code Enforcement Bureau.
     Community outreach and development projects in post-Katrina New Orleans.
   </li>
+</ul>
+
+<h2>Education</h2>
+
+<ul>
+  <li>Ph.D. in Political Science, University of Houston (2018)</li>
+  <li>M.A. in Political Science, University of New Orleans (2009)</li>
+  <li>B.A. in Mass Communication, Louisiana State University (2007)</li>
 </ul>
 
 <h2>Skills</h2>
@@ -129,9 +129,8 @@ redirect_from:
   </li>
 </ul>
 
-<h2>Service and Leadership</h2>
-
-<p><strong>Journal Peer Reviewer:</strong> International Studies Quarterly, European Journal of Political Research, Political Communication, The International Journal of Press/Politics, International Journal of Communication, and Journal of Information Technology &amp; Politics.</p>
+<h2>Service</h2>
+<p><strong>Journal Peer Reviewer:</strong> <em>International Studies Quarterly</em>, <em>European Journal of Political Research</em>, <em>Political Communication</em>, <em>The International Journal of Press/Politics</em>, <em>International Journal of Communication</em>, and <em>Journal of Information Technology &amp; Politics</em>.</p>
 
 </div>
 
