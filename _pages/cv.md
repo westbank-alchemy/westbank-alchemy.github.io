@@ -10,6 +10,10 @@ redirect_from:
 {% include base_path %}
 
 <style>
+  .archive > .page__title {
+    display: none;
+  }
+
   .background-compact {
     font-size: 0.85rem;
     line-height: 1.45;
@@ -63,11 +67,11 @@ redirect_from:
 <h2>Professional Experience</h2>
 
 <ul>
-  <li>
-    <strong>AidData, William &amp; Mary</strong> (2019–2026).
-    Research Scientist (2023–2026); Senior Research Analyst (2021–2023); Research Analyst (2019–2021).
-    Designed and led cross-national research on foreign influence, development finance, public opinion, and media and information environments.
-  </li>
+<li>
+  <strong>AidData, William &amp; Mary</strong> (2019–2026).
+  Research Scientist (2023–2026), previously Senior Research Analyst and Research Analyst.
+  Led research on foreign influence, development finance, public opinion, and media environments.
+</li>
 
   <li>
     <strong>International Panel on the Information Environment (IPIE)</strong>.
