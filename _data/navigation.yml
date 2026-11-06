@@ -14,12 +14,12 @@ main:
   - title: "Publications"
     url: /publications/   
 
+  - title: "Code & Data"
+    url: /code-data/
+
   - title: "Some Odd Road"
     url: /year-archive/
-    
-  - title: "Contact"
-    url: /contact/
-    
+
   # - title: "CV"
   #   url: /cv-json/
     
