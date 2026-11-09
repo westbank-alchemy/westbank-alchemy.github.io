@@ -1,0 +1,276 @@
+########################################################################
+# Project: GEC-PH R2                                                   #
+# Task: ANALYSIS Manila Times Op-ed w/ "China" Aug 23,2024-Jan 1, 2010 #
+# Author: jas                                                 #
+# IDE and R Version: R Studio; 4.3.1                          #
+###############################################################
+
+
+# Call R version
+R.Version()
+
+# Clear workspace
+rm(list=ls())
+
+# Set the working directory
+setwd("G:/Shared drives/Policy Analysis Unit/Active Projects/GEC Philippines PRC Media/3. Data/MTC_opinion")
+
+#Load libraries
+library(dplyr)    # For data manipulation
+library(tidyr)    # For separating columns
+library(readr)
+library(ggplot2)
+
+##########################
+### Prep For Analysis  ###
+##########################
+
+# Clear workspace
+rm(list=ls())
+
+# Set the working directory to where your .txt files are stored
+setwd("G:/Shared drives/Policy Analysis Unit/Active Projects/GEC Philippines PRC Media/3. Data/MTC_opinion")
+
+#Read csv file
+mtc_lsd <- read_csv("china_mentions_sentiment_all.csv") # LSD analysis
+mtc_ttl <- read_csv("monthly_article_counts.csv")     # Count of all op-eds, MT
+
+#################
+## LSD (First) ##
+#################
+
+# Sort the dataframe by Year and then by Month
+mtc_lsd <- mtc_lsd |>
+  filter(Year != 2004) |>
+  arrange(desc(Year), Month)
+
+# Add a new column labeled "Article" with all rows set to 1
+mtc_lsd <- mtc_lsd |>
+  mutate(Article = 1)
+
+# Convert months to quarters
+mtc_lsd <- mtc_lsd |>
+  mutate(
+    Month = as.numeric(Month),  # Convert Month to numeric
+    Quarter = case_when(
+      Month %in% c(1, 2, 3) ~ 1,
+      Month %in% c(4, 5, 6) ~ 2,
+      Month %in% c(7, 8, 9) ~ 3,
+      Month %in% c(10, 11, 12) ~ 4
+    )
+  )
+
+#create 1/4 dataframe
+mtc_lsd_qtr <- mtc_lsd |>
+  group_by(Year, Quarter) |>
+  summarise(
+    Avg_Sentiment = mean(Sentiment, na.rm = TRUE),
+    Avg_WindowSentiment = mean(WindowSentiment, na.rm = TRUE),
+    ch_oped  = sum(Article, na.rm = TRUE)
+  ) |>
+  ungroup()
+
+#create year dataframe
+mtc_lsd_yr <- mtc_lsd |>
+  group_by(Year) |>
+  summarise(
+    Avg_Sentiment = mean(Sentiment, na.rm = TRUE),
+    Avg_WindowSentiment = mean(WindowSentiment, na.rm = TRUE),
+    ch_oped = sum(Article, na.rm = TRUE)
+  ) |>
+  ungroup()
+
+###################
+## Counts (Next) ##
+###################
+
+# Convert months to quarters
+mtc_ttl <- mtc_ttl |>
+  mutate(
+    Month = as.numeric(Month),  # Convert Month to numeric
+    Quarter = case_when(
+      Month %in% c(1, 2, 3) ~ 1,
+      Month %in% c(4, 5, 6) ~ 2,
+      Month %in% c(7, 8, 9) ~ 3,
+      Month %in% c(10, 11, 12) ~ 4
+    )
+  )
+
+#create 1/4 dataframe
+mtc_ttl_qtr <- mtc_ttl |>
+  group_by(Year, Quarter) |>
+  summarise(
+    all_oped = sum(Count, na.rm = TRUE)
+  ) |>
+  ungroup()
+
+#create year dataframe
+mtc_ttl_yr <- mtc_ttl |>
+  group_by(Year) |>
+  summarise(
+    all_oped = sum(Count, na.rm = TRUE)
+  ) |>
+  ungroup()
+
+###########
+## Merge ##
+###########
+
+###
+#~ Merge 1/4 
+###
+
+#Add row after merge
+new_row <- data.frame(
+  Year = 2010,  Quarter = 4,
+  Avg_Sentiment = NA,  Avg_WindowSentiment = NA,
+  ch_oped = 0, all_oped = 0, prct_ch = 0
+)
+
+#Merge
+mtc_analysis_qtr <- full_join(mtc_lsd_qtr, mtc_ttl_qtr, by = c("Year", "Quarter")) |>
+  mutate(prct_ch  = (ch_oped / all_oped) * 100) |>
+  mutate(
+    ch_oped = replace_na(ch_oped, 0),
+    all_oped = replace_na(all_oped, 0),
+    prct_ch = replace_na(prct_ch, 0)
+  ) |>
+  rbind(new_row) |>
+  arrange(Year, Quarter)
+
+
+# Save to CSV/entire R environment file
+write.csv(mtc_analysis_qtr, file = "mtc_analysis_qtr.csv", row.names = FALSE, fileEncoding = "UTF-8")
+save.image(file = "mtc_analysis_qtrt.RData")
+
+# Merge Year
+mtc_analysis_yr  <- full_join(mtc_lsd_yr, mtc_ttl_yr, by = "Year") |>
+  mutate(prct_ch = (ch_oped / all_oped) * 100)
+
+# Save to CSV/entire R environment file
+write.csv(mtc_analysis_yr, file = "mtc_analysis_yr.csv", row.names = FALSE, fileEncoding = "UTF-8")
+save.image(file = "mtc_analysis_yr.RData")
+
+#Clear congestion in Env.
+all_objects <- ls() # List all objects in the environment
+objects_to_keep <- c("mtc_analysis_yr", "mtc_analysis_qtr") # Specify the objects you want to keep
+rm(list = setdiff(all_objects, objects_to_keep)) # Remove all other objects
+
+##############
+## Analysis ##
+##############
+
+#load
+load("mtc_analysis_yr.RData")
+load("mtc_analysis_qtrt.RData")
+
+# % of articles that mentions China: 1/4, year
+
+#~ Quarter
+
+# Create a Date column from Year and Quarter
+fig <- mtc_analysis_qtr |>
+  mutate(Date = as.Date(paste(Year, Quarter * 3 - 2, 1, sep = "-")))  # Assuming quarters start in Jan, Apr, Jul, Oct
+
+# Plot the quarter time series with ggplot2
+ggplot(fig, aes(x = Date, y = prct_ch)) +
+  geom_line(color = "blue") +
+  geom_point(color = "red") +
+  geom_smooth(method = "loess", color = "green") +  # Optional: Adds a LOESS smoothing line
+  labs(title = "Percentage of Op-Eds Mentioning China in the Manila Times",
+       x = "Date",
+       y = "Percentage of Op-Eds (%)") +
+  theme_minimal()
+
+# Optional: Save the plot to a file
+ggsave("time_series_opeds_china.png")
+
+#~ year
+
+# Plot the year time series with ggplot2
+ggplot(mtc_analysis_yr, aes(x = Year, y = prct_ch)) +
+  geom_line(color = "blue") +
+  geom_point(color = "red") +
+  geom_smooth(method = "loess", color = "green") +  # Optional: Adds a LOESS smoothing line
+  labs(title = "Yearly Percentage of Op-Eds Mentioning China in the Manila Times",
+       x = "Year",
+       y = "Percentage of Op-Eds (%)") +
+  theme_minimal()
+
+# Optional: Save the plot to a file
+ggsave("yearly_time_series_opeds_china.png")
+
+# Sentiment of China (whole articles): 1/4, year
+
+# QUARTER Plot Avg_Sentiment over time, ensuring the years are labeled on the X-axis
+ggplot(mtc_analysis_qtr, aes(x = Year + (Quarter - 1) / 4, y = Avg_Sentiment)) +
+  geom_line(group = 1, color = "blue") +
+  geom_point(color = "red") +
+  scale_x_continuous(breaks = unique(mtc_analysis_qtr$Year), labels = unique(mtc_analysis_qtr$Year)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +  # Adds a dashed line at y = 0
+  labs(title = "Sentiment Over Time, Quarterly (Full article sentiment)",
+       x = "Year",
+       y = "Average Sentiment") +
+  theme_minimal() +
+  theme(
+    panel.background = element_blank(),   # Makes the background blank white
+    panel.grid.major = element_blank(),   # Removes major grid lines
+    panel.grid.minor = element_blank(),   # Removes minor grid lines
+    axis.line = element_line(color = "black")  # Adds axis lines
+  )
+
+# YEAR Plot Avg_Sentiment over time, ensuring the years are labeled on the X-axis
+ggplot(mtc_analysis_yr, aes(x = Year, y = Avg_Sentiment)) +
+  geom_line(group = 1, color = "blue") +
+  geom_point(color = "red") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +  # Adds a dashed line at y = 0
+  labs(title = "Yearly Sentiment Over Time",
+       x = "Year",
+       y = "Average Sentiment") +
+  theme_minimal() +
+  theme(
+    panel.background = element_blank(),   # Makes the background blank white
+    panel.grid.major = element_blank(),   # Removes major grid lines
+    panel.grid.minor = element_blank(),   # Removes minor grid lines
+    axis.line = element_line(color = "black")  # Adds axis lines
+  )
+
+
+# Sentiment of China (window): 1/4, year
+
+# Plot Avg_Sentiment over time, ensuring the years are labeled on the X-axis
+ggplot(mtc_analysis_qtr, aes(x = Year + (Quarter - 1) / 4, y = Avg_WindowSentiment)) +
+  geom_line(group = 1, color = "blue") +
+  geom_point(color = "red") +
+  scale_x_continuous(breaks = unique(mtc_analysis_qtr$Year), labels = unique(mtc_analysis_qtr$Year)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +  # Adds a dashed line at y = 0
+  labs(title = "Sentiment Over Time, Quarterly (Window +/- 8 words sentiment)",
+       x = "Year",
+       y = "Average Sentiment") +
+  theme_minimal() +
+  theme(
+    panel.background = element_blank(),   # Makes the background blank white
+    panel.grid.major = element_blank(),   # Removes major grid lines
+    panel.grid.minor = element_blank(),   # Removes minor grid lines
+    axis.line = element_line(color = "black")  # Adds axis lines
+  )
+
+# YEAR Plot Avg_Sentiment over time, ensuring the years are labeled on the X-axis
+ggplot(mtc_analysis_yr, aes(x = Year, y = Avg_WindowSentiment)) +
+  geom_line(group = 1, color = "blue") +
+  geom_point(color = "red") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +  # Adds a dashed line at y = 0
+  labs(title = "Yearly Sentiment Over Time  (Window +/- 8 words sentiment China)",
+       x = "Year",
+       y = "Average Sentiment") +
+  theme_minimal() +
+  theme(
+    panel.background = element_blank(),   # Makes the background blank white
+    panel.grid.major = element_blank(),   # Removes major grid lines
+    panel.grid.minor = element_blank(),   # Removes minor grid lines
+    axis.line = element_line(color = "black")  # Adds axis lines
+  )
+
+
+
+
