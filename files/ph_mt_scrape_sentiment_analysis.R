@@ -1,9 +1,25 @@
 ###############################################################
-# Project: GEC-PH R2                                          #
-# Task: Manila Times Op-ed w/ "China" Aug 23,2024-Jan 1, 2010 #
+# Project: Investing in Narratives                            #
+# Task: Scrape Manila Times Op-ed w/ "China" Aug 23,2024-     #
+#       Jan 1, 2010; use Lexicoder Sentiment Dictionary (LSD) #
+#       to get positive/negative mention                      #
 # Author: jas                                                 #
 # IDE and R Version: R Studio; 4.3.1                          #
 ###############################################################
+
+# ARCHIVED RESEARCH CODE
+# Original analytical workflow developed in August 2024.
+# This script documents the methods used in the original research.
+# It has not been retested with current software or package versions.
+# Authentication credentials have been removed.
+# Internal directory paths have been anonymized.
+# The analysis used the Lexicoder Sentiment Dictionary (LSD2015)
+# available through the quanteda R package in August 2024.
+# The script references the Lexicoder preprocessing file
+# (LSDpreprocess2015v2.txt), which is not included here.
+# Due to a formatting mismatch, these preprocessing rules
+# may not have executed as intended. The effect on the
+# original sentiment estimates has not been assessed. ~11/09/2026
 
 # Call R version
 R.Version()
@@ -28,8 +44,8 @@ library(ggplot2)
 
 # Define the login URL and credentials
 login_url <- "https://www.manilatimes.net/premium"  # Update this with the actual login URL
-username <- "jsolis@aiddata.wm.edu"
-password <- "HolaComoEstas?1111"
+username <- "[enter username]"
+password <- "[enter password]"
 
 # Create a session and load the login page
 session <- html_session(login_url)
@@ -78,12 +94,12 @@ cat("Content: ", full_content, "\n")
 rm(list=ls())
 
 # Set the working directory
-setwd("G:/Shared drives/Policy Analysis Unit/Active Projects/GEC Philippines PRC Media/3. Data/ManilaTimesChina")
+setwd("[file path]")
 
 # Define the login URL and credentials
 login_url <- "https://www.manilatimes.net/premium"  # Update this with the actual login URL
-username <- "jsolis@aiddata.wm.edu"
-password <- "HolaComoEstas?1111"
+username <- "[enter username]"
+password <- "[enter password]"
 
 # Create a session and load the login page
 session <- html_session(login_url)
@@ -156,7 +172,7 @@ for (link in article_links) {
 ####################################
 
 # Set the working directory
-setwd("G:/Shared drives/Policy Analysis Unit/Active Projects/GEC Philippines PRC Media/3. Data/ManilaTimesChina")
+setwd("[file path]")
 
 # Call R version
 R.Version()
@@ -166,8 +182,8 @@ rm(list=ls())
 
 # Define the login URL and credentials
 login_url <- "https://www.manilatimes.net/premium"  # Update this with the actual login URL
-username <- "jsolis@aiddata.wm.edu"
-password <- "HolaComoEstas?1111"
+username <- "[enter username]"
+password <- "[enter password]"
 
 # Create a session and load the login page
 session <- html_session(login_url)
@@ -245,15 +261,15 @@ for (link in article_links) {
 ###############################################################
 
 # Set the working directory
-setwd("G:/Shared drives/Policy Analysis Unit/Active Projects/GEC Philippines PRC Media/3. Data/ManilaTimesChina")
+setwd("[file path]")
 
 # Clear workspace
 rm(list=ls())
 
 # Define the login URL and credentials
 login_url <- "https://www.manilatimes.net/premium"  # Update this with the actual login URL
-username <- "jsolis@aiddata.wm.edu"
-password <- "HolaComoEstas?1111"
+username <- "[enter username]"
+password <- "[enter password]"
 
 # Create a session and load the login page
 session <- html_session(login_url)
@@ -403,11 +419,11 @@ for (page_num in 2:965) {
 #Grabbed a bunch of stray articles randomly places, now sort only links with `/opinion/`
 
 # Set the working directory to where .txt files are stored
-setwd("G:/Shared drives/Policy Analysis Unit/Active Projects/GEC Philippines PRC Media/3. Data/ManilaTimesChina")  # Replace with your actual directory path
+setwd("[file path]")
 
 # Specify the destination directories
-opinion_dir <- "G:/Shared drives/Policy Analysis Unit/Active Projects/GEC Philippines PRC Media/3. Data/MTC_opinion"  # Replace with the path for files containing "/opinion/"
-no_opinion_dir <- "G:/Shared drives/Policy Analysis Unit/Active Projects/GEC Philippines PRC Media/3. Data/MTC_other"  # Replace with the path for files not containing "/opinion/"
+opinion_dir <- "[file path]"  # Replace with the path for files containing "/opinion/"
+no_opinion_dir <- "[file path]"  # Replace with the path for files not containing "/opinion/"
 
 # Ensure both destination directories exist
 if (!dir.exists(opinion_dir)) {
@@ -450,13 +466,13 @@ for (file_name in file_list) {
 rm(list=ls())
 
 # Set the working directory
-setwd("G:/Shared drives/Policy Analysis Unit/Active Projects/GEC Philippines PRC Media/3. Data/MTC_opinion")
+setwd("[file path]")
 
 # List all .txt files in the directory
 file_list <- list.files(pattern = "*.txt")
 
 # Load the LSD preprocessing rules and filter out 'punc' and 'caps' modules
-preprocess_rules <- readLines("G:/Shared drives/Policy Analysis Unit/Active Projects/GEC Philippines PRC Media/3. Data/LSDpreprocess2015v2.txt", encoding = "UTF-8")
+preprocess_rules <- readLines("[file path]", encoding = "UTF-8")
 
 # Function to apply LSD preprocessing rules with error handling for UTF-8
 apply_lsd_preprocessing <- function(text, rules) {
@@ -767,9 +783,9 @@ write.csv(count_by_month_year, file = "monthly_article_counts.csv", row.names = 
 # Print the result
 print(count_by_month_year)
 
-###Expected to grab 14,265 articles, but only grabbed 14,255. This is 99.9% accurate. Fine for now###
-###Note: 14,265 is before dropping Aug 2024 (to count manualy because its not al days that month) and dropping
-## less than year 2010
+### Expected to grab 14,265 articles, but only grabbed 14,255. This is 99.9% accurate. Fine for now.
+### Note: 14,265 is before dropping Aug 2024 (to count manually because its not all days that month) 
+### and dropping less than year 2010.
 
 # ==============================================================================
 # NOTE: Final Raw Data Outputs
@@ -778,6 +794,6 @@ print(count_by_month_year)
 # - "china_mentions_sentiment_all.csv"
 #    -> LSD sentiment anlaysis, China mentions p/ article, token (word) count
 # - "monthly_article_counts.csv"
-#    -> count total number of articles by month-year from Aug 23, 2024-Jan 1 2020
+#    -> count total number of articles by month-year from Aug 23, 2024-Jan 1 2010
 # ==============================================================================
 
