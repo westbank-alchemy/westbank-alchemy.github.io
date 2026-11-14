@@ -5,24 +5,8 @@ permalink: /code-data/
 author_profile: true
 ---
 
+
 {% include base_path %}
-
-
-/* Tighter spacing for Code & Data entries */
-.code-data-entry {
-  margin-bottom: 1.1em;
-}
-
-.code-data-entry p {
-  margin-top: 0;
-  margin-bottom: 0.25em;
-  line-height: 1.4;
-}
-
-.code-data-entry p:last-child {
-  margin-bottom: 0;
-}
-
 
 <style>
   h1.page__title {
@@ -51,8 +35,20 @@ author_profile: true
     margin-bottom: 0.8em;
   }
 
+  /* Tighter spacing between entries */
   .code-data-entry {
-    margin-bottom: 0.8em;
+    margin-bottom: 1.1em;
+  }
+
+  /* Tighter spacing within each entry */
+  .code-data-content .code-data-entry p {
+    margin-top: 0;
+    margin-bottom: 0.25em;
+    line-height: 1.4;
+  }
+
+  .code-data-content .code-data-entry p:last-child {
+    margin-bottom: 0;
   }
 </style>
 
